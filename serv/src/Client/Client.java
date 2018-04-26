@@ -9,7 +9,7 @@ import Server.*;
 
 
 public class Client {
-    private static final int port = 1234;
+    private static final int port = 30499;
     private static final String host = "localhost";
 
     public static void main(String ... args){
@@ -25,11 +25,22 @@ public class Client {
         byte[] answer = new byte[1000];
         try{
             DatagramSocket datagramSocket = new DatagramSocket();
-            DatagramPacket start = new DatagramPacket( new String("123").getBytes(), in.nextLine().getBytes().length, adr);
-            datagramSocket.send(start);
+
+            DatagramChannel dchan = DatagramChannel.open().connect(adr);
         while (true){
-                DatagramPacket outp = new DatagramPacket(in.nextLine().getBytes(), in.nextLine().getBytes().length, adr);
+            if(dchan.isConnected()){
+                String toSend = in.nextLine();
+                DatagramPacket outp = new DatagramPacket(toSend.getBytes(), toSend.getBytes().length, adr);
                 datagramSocket.send(outp);
+                byte[] bytes = new byte[200];
+                DatagramPacket inp = new DatagramPacket(bytes, 200);
+                datagramSocket.receive(inp);
+                String str = "";
+                for (byte i : bytes) {
+                    str+=(char)i;
+                }
+                System.out.println(str);
+            }
                  try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
@@ -37,28 +48,6 @@ public class Client {
                 }
         }
         } catch (IOException ex){ex.printStackTrace();}
-      /**
 
-
-            try {
-                String sendStr = in.nextLine();
-                byte[] tosend = sendStr.getBytes();
-                SocketAddress adr = new InetSocketAddress("localhost", port);
-                DatagramPacket dpack = new DatagramPacket(tosend, tosend.length, adr);
-                DatagramSocket dsock = new DatagramSocket();
-                dsock.connect(adr);
-                dsock.send(dpack);
-                dsock.disconnect();
-                dsock.close();
-                ByteBuffer fromServ = ByteBuffer.wrap(tosend);
-                fromServ.clear();
-                DatagramChannel dchan = DatagramChannel.open();
-                dchan.bind(adr);
-                dchan.receive(fromServ);
-                String toPrint = new String(fromServ.array());
-                System.out.println(toPrint);
-                }
-            catch (IllegalArgumentException | IOException ex){System.out.println("This command no longer exists");}
-        }*/
     }
 }

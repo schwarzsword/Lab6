@@ -3,6 +3,8 @@ package Server;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import com.google.gson.*;
 /**
  * StickCollection, class controls collection.
@@ -20,14 +22,14 @@ public class SticksCollection{
     }
 
 
-    private LinkedHashSet<Stick> myColl = new LinkedHashSet<>();
+    private CopyOnWriteArraySet<Stick> myColl = new CopyOnWriteArraySet<>();
     /**
      * Method allows to import data from file to
      * collection.
      * Format of file should be <i>csv</i>.
      * @param path location of file.
      */
-    public ByteBuffer collectionImport(String path){
+    public byte[] collectionImport(String path){
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(path));
@@ -49,8 +51,7 @@ public class SticksCollection{
             ex.printStackTrace();
         }
         String sendStr = new String("Collection imported");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
     /**
      * Method allows to remove elements
@@ -58,7 +59,7 @@ public class SticksCollection{
      * if their length smaller than input.
      * @param str element in Json format.
      */
-    public ByteBuffer removeLower(String str){
+    public byte[] removeLower(String str){
         Gson gson = new Gson();
         Stick testStick = gson.fromJson(str, Stick.class);
         while (myColl.iterator().hasNext()){
@@ -68,8 +69,7 @@ public class SticksCollection{
             }
         }
         String sendStr = new String("Element removed");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
     /**
      * .Method allows to add element
@@ -77,7 +77,7 @@ public class SticksCollection{
      * if it has maximal length
      * @param str element in Json format.
      */
-    public ByteBuffer addIfMax(String str){
+    public byte[] addIfMax(String str){
         Gson gson = new Gson();
         Stick testStick = gson.fromJson(str, Stick.class);
         int counter = 0;
@@ -89,24 +89,21 @@ public class SticksCollection{
         if (counter == myColl.size()){
             myColl.add(testStick);
             String sendStr = new String("Stick added successfully");
-            byte[] bytes = sendStr.getBytes();
-            return ByteBuffer.wrap(bytes);
+            return sendStr.getBytes();
         }
         else {String sendStr = new String("Stick's length isn't enough");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);}
+        return sendStr.getBytes();}
 
     }
     /**
      * Method allows to print information
      * about collection.
      */
-    public ByteBuffer info(){
+    public byte[] info(){
         String type = "Stick";
         int size = myColl.size();
         String sendStr = new String("Collection type: "+ type +", Elements in total: " + size + ", Initialization date :" + getInitialization());
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
     /**
      * Method allows to import data to file from
@@ -114,7 +111,7 @@ public class SticksCollection{
      * Format of file should be <i>csv</i>.
      * @param path location of file.
      */
-    public ByteBuffer save(String path){
+    public byte[] save(String path){
         try {
             FileOutputStream writer = new FileOutputStream(path);
             myColl.forEach(e -> {
@@ -128,8 +125,7 @@ public class SticksCollection{
 
         } catch (IOException ex){ex.printStackTrace();}
         String sendStr = new String("Collection saved");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
     /**
      * Method allows to print every element
@@ -143,7 +139,7 @@ public class SticksCollection{
         return ByteBuffer.wrap(bytes);
         });
     }*/
-    public ByteBuffer man()
+    public byte[] man()
     {
         String sendStr = new String("import - method allows to import data to file from collection\n " +
                 "remove_lower - method allows to remove elements from collection, if their length smaller than input\n" +
@@ -153,38 +149,32 @@ public class SticksCollection{
                 "save -  method allows to import data to file from collection\n" +
                 "man - method allows to show command list or command info\n" +
                 "exit - method closes work with collection");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
-    public ByteBuffer manImport(){
+    public byte[] manImport(){
         String sendStr = new String("import - method allows to import data to file from collection");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
 
     }
-    public ByteBuffer manRemLow(){
+    public byte[] manRemLow(){
         String sendStr = new String("remove_lower - method allows to remove elements from collection, if their length smaller than input\n" +
                 "should get Json string as input object\n" +
                 "example: remove_lower {\"stickName\":\"Stick6\",\"stickCoordBeg\":[0,0],\"stickCoordEnd\":[10,10],\"stickLength\":14}");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
-    public ByteBuffer manInfo(){
+    public byte[] manInfo(){
         String sendStr = new String("import - method allows to import data to file from collection");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
-    public ByteBuffer manAddIfMax(){
+    public byte[] manAddIfMax(){
         String sendStr = new String("add_if_max - method allows to add element to collection, if it's length bigger than input\n" +
                 "should get Json string as input object\n" +
                 "example: add_if_max {\"stickName\":\"Stick6\",\"stickCoordBeg\":[0,0],\"stickCoordEnd\":[10,10],\"stickLength\":14}");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
-    public ByteBuffer manPrint(){
+    public byte[] manPrint(){
         String sendStr = new String("print - method allows to print out every element of collection");
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
+        return sendStr.getBytes();
     }
     /**
      * Method allows to interact with
@@ -193,10 +183,9 @@ public class SticksCollection{
      * @param command inputten command.
      * @param path location of file.
      */
-    public ByteBuffer startWork(String command, String path){
-        ByteBuffer send = ByteBuffer.allocate(1000);
+    public byte[] startWork(String command, String path){
+        byte[] send;
         switch (command.contains(" ")?command.substring(0,command.indexOf(" ")):command){
-
             case "import":
                send = collectionImport(path);
                 break;
@@ -236,8 +225,7 @@ public class SticksCollection{
             case "exit":
                 System.exit(0);
                 String toSend = new String("System exit. Code 0");
-                byte[] bytes = toSend.getBytes();
-                send = ByteBuffer.wrap(bytes);
+                send = toSend.getBytes();
                 break;
             default: throw new IllegalArgumentException();
         }
