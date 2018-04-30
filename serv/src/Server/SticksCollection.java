@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.*;
 
 import com.google.gson.*;
 /**
@@ -11,7 +12,7 @@ import com.google.gson.*;
  * @author Kirill Cherniy.
  * @version 1.0.0alpha.
  */
-public class SticksCollection{
+public class SticksCollection implements Serializable{
     private static Date initialization;
     public static Date getInitialization() {
         return initialization;
@@ -23,12 +24,14 @@ public class SticksCollection{
 
 
     private CopyOnWriteArraySet<Stick> myColl = new CopyOnWriteArraySet<>();
+
     /**
      * Method allows to import data from file to
      * collection.
      * Format of file should be <i>csv</i>.
      * @param path location of file.
      */
+
     public byte[] collectionImport(String path){
 
         try {
@@ -131,14 +134,16 @@ public class SticksCollection{
      * Method allows to print every element
      * from collection in Json format.
      */
-  /**  public ByteBuffer print(){
-        myColl.forEach(e-> {Gson gson = new Gson();
-        System.out.println(gson.toJson(e));
-        String sendStr = new String(gson.toJson(e).toString());
-        byte[] bytes = sendStr.getBytes();
-        return ByteBuffer.wrap(bytes);
-        });
-    }*/
+     public byte[] print() {
+       String str = "";
+       Gson gson = new Gson();
+       myColl.stream().sorted();
+         for (Stick e: myColl){
+             str+=gson.toJson(e)+"\n";
+     }
+     byte[] bytes = str.getBytes();
+         return bytes;
+     }
     public byte[] man()
     {
         String sendStr = new String("import - method allows to import data to file from collection\n " +
@@ -163,7 +168,7 @@ public class SticksCollection{
         return sendStr.getBytes();
     }
     public byte[] manInfo(){
-        String sendStr = new String("import - method allows to import data to file from collection");
+        String sendStr = new String("Info - methos allows to show actual infomation about collection");
         return sendStr.getBytes();
     }
     public byte[] manAddIfMax(){
@@ -185,22 +190,22 @@ public class SticksCollection{
      */
     public byte[] startWork(String command, String path){
         byte[] send;
-        switch (command.contains(" ")?command.substring(0,command.indexOf(" ")):command){
+        switch (command.contains(" ")?command.substring(0,command.indexOf(" ")):command.substring(0,command.indexOf((char)0))){
             case "import":
                send = collectionImport(path);
                 break;
             case "remove_lower":
-                send = removeLower(command.substring(command.indexOf(" ")+1));
+                send = removeLower(command.substring(command.indexOf(" ")+1, command.indexOf("}")+1));
                 break;
             case "info":
                send = info();
                 break;
             case "add_if_max":
-                send = addIfMax(command.substring(command.indexOf(" ")+1));
+                send = addIfMax(command.substring(command.indexOf(" ")+1, command.indexOf("}")+1));
                 break;
-            /**case "print":
-                print();
-                break;*/
+            case "print":
+                send = print();
+                break;
             case "save":
                 send = save(path);
                 break;
@@ -227,7 +232,8 @@ public class SticksCollection{
                 String toSend = new String("System exit. Code 0");
                 send = toSend.getBytes();
                 break;
-            default: throw new IllegalArgumentException();
+            default: String sendStr = new String("Invalid command");
+                return sendStr.getBytes();
         }
         return send;
     }

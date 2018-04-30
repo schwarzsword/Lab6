@@ -13,26 +13,19 @@ public class ServerThread implements Runnable{
     String command;
     SticksCollection collection;
     String path;
-    ServerThread(SocketAddress adr, String command, SticksCollection collection, String way){
+    ServerThread(SocketAddress adr, String str, SticksCollection collection, String way){
         this.adr = adr;
-        this.command = command;
+        command = str;
         this.collection = collection;
-        way = path;
+        path = way;
     }
     @Override
     public void run() {
         try {
             DatagramSocket datagramSocket = new DatagramSocket();
-            while (true){
                     byte[] toSend = collection.startWork(command, path);
                     DatagramPacket outp = new DatagramPacket(toSend, toSend.length, adr);
                     datagramSocket.send(outp);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            }
     }catch (IOException ex){ex.printStackTrace();}
     }
 }
