@@ -1,16 +1,11 @@
 package Client;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
-import Server.*;
-import java.util.Date;
-
 
 public class Client {
     private int port;
     private String host;
-
     public int getPort() {return port;}
     public void setPort(int port) {this.port = port;}
     public void setHost(String host) { this.host = host; }
@@ -39,14 +34,12 @@ public class Client {
             ds.receive(inp);
         }catch (IOException ex){
             System.out.print("Server is irresponsible, try later");
-            //ds.close();
         }
         String str = "";
         for (byte i : bytes) {
             str += (char) i;
         }
         System.out.println(str);
-        //if (str.substring(0, str.indexOf((char)0)+1)== "\"System exit. Code 0\""){System.exit(0);}
     }
     public static void main(String ... args){
         Client cl = new Client();
@@ -65,7 +58,4 @@ public class Client {
                 cl.receive(datagramSocket);
                 Thread.sleep(1500);
             }
-        } catch (IOException | InterruptedException ex){ex.printStackTrace();}
-
-    }
-}
+        } catch (IOException | InterruptedException ex){ex.printStackTrace();} }}

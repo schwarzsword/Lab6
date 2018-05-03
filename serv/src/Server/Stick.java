@@ -1,5 +1,7 @@
 package Server;
 
+import Client.TestRuntimeException;
+
 public class Stick extends Object{
     Stick(String sN, int bx, int by, int ex, int ey){
         setStickName(sN);
@@ -44,7 +46,7 @@ public class Stick extends Object{
         return tmpStickCoordEnd;
     }
 
-    public void setStickCoordBeg(int x, int y) throws TestRuntimeException{
+    public void setStickCoordBeg(int x, int y) throws TestRuntimeException {
         stickCoordBeg[0] = x;
         stickCoordBeg[1] = y;
     }

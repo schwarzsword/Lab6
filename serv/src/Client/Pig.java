@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public class Pig extends Animal implements Walker{
     Pig(String name, int x, int y){

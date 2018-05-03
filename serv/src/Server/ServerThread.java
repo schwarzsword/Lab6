@@ -1,12 +1,8 @@
 package Server;
-
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 
 public class ServerThread implements Runnable{
     SocketAddress adr;
@@ -26,6 +22,4 @@ public class ServerThread implements Runnable{
                     byte[] toSend = collection.startWork(command, path);
                     DatagramPacket outp = new DatagramPacket(toSend, toSend.length, adr);
                     datagramSocket.send(outp);
-    }catch (IOException ex){ex.printStackTrace();}
-    }
-}
+    }catch (IOException ex){ex.printStackTrace();}    }}

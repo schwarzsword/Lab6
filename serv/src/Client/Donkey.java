@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public class Donkey extends Animal implements Looker, Signer{
     public Donkey(String name, int x, int y){

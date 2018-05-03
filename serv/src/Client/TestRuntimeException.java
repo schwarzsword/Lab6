@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public class TestRuntimeException extends RuntimeException{
 }

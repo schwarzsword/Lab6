@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public interface Walker{
     void comeTo(int x, int y);

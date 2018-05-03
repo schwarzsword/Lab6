@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public class HappyPig extends Pig implements Flowerist, Walker{
     public HappyPig(String name, int x, int y){

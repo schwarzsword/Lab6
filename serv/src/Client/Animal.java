@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 abstract class Animal{
     private String name;

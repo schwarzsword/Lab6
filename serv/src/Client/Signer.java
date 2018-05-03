@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 public interface Signer{
     void raiseLeg();
