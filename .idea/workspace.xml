@@ -10,20 +10,12 @@
     <bookmark url="file://$PROJECT_DIR$/serv/src/Server/SticksCollection.java" line="133" mnemonic="9" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93538c1b-5620-495a-b750-ac1f80a4ec39" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/out/artifacts/Lab6/Client.jar" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/out/artifacts/Lab6/Server.jar" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Client.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/Client.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Server.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" id="93538c1b-5620-495a-b750-ac1f80a4ec39" name="Default" comment="r5">
+      <change beforePath="" afterPath="$PROJECT_DIR$/out/artifacts/Client/Client.jar" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/out/artifacts/Server/Server.jar" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/out/production/serv/Client/META-INF/MANIFEST.MF" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/out/production/serv/Server/META-INF/MANIFEST.MF" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/out/production/serv/Client/Client.class" afterPath="$PROJECT_DIR$/out/production/serv/Client/Client.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/serv/Server/Server.class" afterPath="$PROJECT_DIR$/out/production/serv/Server/Server.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/serv/Server/SticksCollection.class" afterPath="$PROJECT_DIR$/out/production/serv/Server/SticksCollection.class" />
-      <change beforePath="$PROJECT_DIR$/serv/src/Client/Client.java" afterPath="$PROJECT_DIR$/serv/src/Client/Client.java" />
-      <change beforePath="$PROJECT_DIR$/serv/src/Server/Server.java" afterPath="$PROJECT_DIR$/serv/src/Server/Server.java" />
-      <change beforePath="$PROJECT_DIR$/serv/src/Server/ServerThread.java" afterPath="$PROJECT_DIR$/serv/src/Server/ServerThread.java" />
-      <change beforePath="$PROJECT_DIR$/serv/src/Server/SticksCollection.java" afterPath="$PROJECT_DIR$/serv/src/Server/SticksCollection.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,8 +38,8 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/serv/src/Client/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="59" column="88" lean-forward="false" selection-start-line="59" selection-start-column="88" selection-end-line="59" selection-end-column="88" />
+            <state relative-caret-position="1020">
+              <caret line="60" column="13" lean-forward="true" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -58,7 +50,7 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/serv/src/Server/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
+            <state relative-caret-position="317">
               <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -376,7 +368,7 @@
       <workItem from="1525274853889" duration="1583000" />
       <workItem from="1525277575422" duration="4213000" />
       <workItem from="1525291521338" duration="246000" />
-      <workItem from="1525308373130" duration="550000" />
+      <workItem from="1525308373130" duration="1116000" />
     </task>
     <task id="LOCAL-00001" summary="r1">
       <created>1524737509976</created>
@@ -420,11 +412,18 @@
       <option name="project" value="LOCAL" />
       <updated>1525308935295</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="r5">
+      <created>1525308956600</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1525308956600</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53973000" />
+    <option name="totallyTimeSpent" value="54539000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -443,14 +442,14 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28" sideWeight="0.5031696" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276923" sideWeight="0.5031696" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276923" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2769231" sideWeight="0.49683043" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276923" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3276923" sideWeight="0.49683043" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2163233" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2163233" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -533,7 +532,8 @@
     <MESSAGE value="r1" />
     <MESSAGE value="r3" />
     <MESSAGE value="r4" />
-    <option name="LAST_COMMIT_MESSAGE" value="r4" />
+    <MESSAGE value="r5" />
+    <option name="LAST_COMMIT_MESSAGE" value="r5" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -898,16 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serv/src/Server/Server.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/serv/lib/gson-2.8.2.jar!/com/google/gson/internal/$Gson$Preconditions.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -946,10 +936,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/serv/src/Server/Server.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/serv/src/Client/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="59" column="88" lean-forward="false" selection-start-line="59" selection-start-column="88" selection-end-line="59" selection-end-column="88" />
+        <state relative-caret-position="1020">
+          <caret line="60" column="13" lean-forward="true" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
