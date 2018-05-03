@@ -65,13 +65,8 @@ public class SticksCollection implements Serializable{
     public byte[] removeLower(String str){
         Gson gson = new Gson();
         Stick testStick = gson.fromJson(str, Stick.class);
-        while (myColl.iterator().hasNext()){
-            Stick e = myColl.iterator().next();
-            if(e.getStickLength() <testStick.getStickLength()){
-                myColl.remove(e);
-            }
-        }
-        String sendStr = new String("Element removed");
+        myColl.forEach(e-> {if(e.getStickLength()<testStick.getStickLength()) {myColl.remove(e);}});
+        String sendStr = new String("Removing completed");
         return sendStr.getBytes();
     }
     /**
@@ -228,7 +223,7 @@ public class SticksCollection implements Serializable{
                 send = manPrint();
                 break;
             case "exit":
-                System.exit(0);
+                //System.exit(0);
                 String toSend = new String("System exit. Code 0");
                 send = toSend.getBytes();
                 break;

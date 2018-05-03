@@ -30,6 +30,7 @@ public class Client {
         String toSend = in.nextLine();
         DatagramPacket outp = new DatagramPacket(toSend.getBytes(), toSend.getBytes().length, adr);
         ds.send(outp);
+        if(toSend.equals("exit")){System.exit(0);}
     }
     public void receive(DatagramSocket ds){
         byte[] bytes = new byte[1000];
@@ -38,12 +39,14 @@ public class Client {
             ds.receive(inp);
         }catch (IOException ex){
             System.out.print("Server is irresponsible, try later");
+            //ds.close();
         }
         String str = "";
         for (byte i : bytes) {
             str += (char) i;
         }
         System.out.println(str);
+        //if (str.substring(0, str.indexOf((char)0)+1)== "\"System exit. Code 0\""){System.exit(0);}
     }
     public static void main(String ... args){
         Client cl = new Client();

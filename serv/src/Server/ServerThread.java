@@ -22,7 +22,7 @@ public class ServerThread implements Runnable{
     @Override
     public void run() {
         try {
-            DatagramSocket datagramSocket = new DatagramSocket();
+                    DatagramSocket datagramSocket = new DatagramSocket();
                     byte[] toSend = collection.startWork(command, path);
                     DatagramPacket outp = new DatagramPacket(toSend, toSend.length, adr);
                     datagramSocket.send(outp);

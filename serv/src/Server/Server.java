@@ -27,14 +27,13 @@ public class Server{
 
         SocketAddress adr = new InetSocketAddress(host,port);
         try{
-            DatagramChannel dchan = DatagramChannel.open().bind(adr);
+            DatagramChannel dchan = DatagramChannel.open().bind(new InetSocketAddress(port));
             while (true){
                 byte[] bytes = new byte[100];
                 ByteBuffer inp = ByteBuffer.wrap(bytes);
                 inp.clear();
                 SocketAddress clientadr = dchan.receive(inp);
                 String str = new String(bytes);
-                //System.out.println(str + dchan.getLocalAddress());
                 new Thread(new ServerThread(clientadr, str, myColl, way)).start();
                 try {
                     Thread.sleep(1000);
