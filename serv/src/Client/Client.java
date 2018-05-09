@@ -2,6 +2,7 @@ package Client;
 import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
+import java.util.Date;
 
 public class Client {
     private int port;
@@ -21,8 +22,9 @@ public class Client {
     }
     public void send(DatagramSocket ds, SocketAddress adr)throws IOException{
         Scanner in = new Scanner(System.in);
+        Date date = new Date();
         ds.setSoTimeout(5000);
-        String toSend = in.nextLine();
+        String toSend = date.getTime() + ";" + in.nextLine();
         DatagramPacket outp = new DatagramPacket(toSend.getBytes(), toSend.getBytes().length, adr);
         ds.send(outp);
         if(toSend.equals("exit")){System.exit(0);}
@@ -34,6 +36,7 @@ public class Client {
             ds.receive(inp);
         }catch (IOException ex){
             System.out.print("Server is irresponsible, try later");
+
         }
         String str = "";
         for (byte i : bytes) {

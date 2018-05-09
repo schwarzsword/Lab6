@@ -9,7 +9,7 @@ public class ServerThread implements Runnable{
     String command;
     SticksCollection collection;
     String path;
-    ServerThread(SocketAddress adr, String str, SticksCollection collection, String way){
+    public ServerThread(SocketAddress adr, String str, SticksCollection collection, String way){
         this.adr = adr;
         command = str;
         this.collection = collection;
