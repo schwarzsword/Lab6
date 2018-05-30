@@ -23,7 +23,13 @@ public class SticksCollection implements Serializable{
     }
 
 
+    public CopyOnWriteArraySet<Stick> getMyColl() {
+        return myColl;
+    }
+
     private CopyOnWriteArraySet<Stick> myColl = new CopyOnWriteArraySet<>();
+
+
 
     /**
      * Method allows to import data from file to
@@ -40,12 +46,12 @@ public class SticksCollection implements Serializable{
             char EoS;
             String value = new String();
             String splitBy = ",";
-            String[] collectVal = new String[5];
+            String[] collectVal = new String[6];
                 while (((EoF = reader.read()) != -1)){
                     if((EoS=(char)EoF) != ';'){value+=EoS;}
                     else
                     {collectVal = value.split(splitBy);
-                    Stick testStick = new Stick(collectVal[0], Integer.valueOf(collectVal[1]), Integer.valueOf(collectVal[2]),Integer.valueOf(collectVal[3]), Integer.valueOf(collectVal[4]));
+                    Stick testStick = new Stick(collectVal[0], Integer.valueOf(collectVal[1]), Integer.valueOf(collectVal[2]),Integer.valueOf(collectVal[3]), Integer.valueOf(collectVal[4]), Material.valueOf(collectVal[5]));
                     myColl.add(testStick);
                     value = "";}}
             reader.close();
@@ -113,7 +119,7 @@ public class SticksCollection implements Serializable{
         try {
             FileOutputStream writer = new FileOutputStream(path);
             myColl.forEach(e -> {
-                String output = e.getStickName()+","+e.getStickCoordBeg(0)+","+e.getStickCoordBeg(1)+","+e.getStickCoordEnd(0)+","+e.getStickCoordEnd(1)+";";
+                String output = e.getStickName()+","+e.getStickCoordBeg().getX()+","+e.getStickCoordBeg().getY()+","+e.getStickCoordEnd().getX()+","+e.getStickCoordEnd().getY()+","+e.getStickLength()+","+e.getMaterial()+";";
                 char[] outp = output.toCharArray();
                 for(int i = 0; i<output.length(); i++ ){
                     try{writer.write((byte)outp[i]);}catch (IOException ex){}
@@ -176,6 +182,10 @@ public class SticksCollection implements Serializable{
         String sendStr = new String("print - method allows to print out every element of collection");
         return sendStr.getBytes();
     }
+
+    public void add(Stick stick){
+         myColl.add(stick);
+    }
     /**
      * Method allows to interact with
      * collection.
@@ -183,6 +193,7 @@ public class SticksCollection implements Serializable{
      * @param command inputten command.
      * @param path location of file.
      */
+
     public byte[] startWork(String command, String path){
         byte[] send;
         switch (command.contains(" ")?command.substring(0,command.indexOf(" ")):command.substring(0,command.indexOf((char)0))){
