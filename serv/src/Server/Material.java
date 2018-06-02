@@ -1,6 +1,8 @@
 package Server;
 
-public enum Material {
+import java.io.Serializable;
+
+public enum Material implements Serializable {
     OAK,
     BIRTCH,
     ELM,

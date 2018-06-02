@@ -28,7 +28,7 @@ public class Server{
             logIn(this);
         }
 
-         void logIn(JFrame current){
+        void logIn(JFrame current){
             JFrame login = new JFrame("Sign in");
             login.setDefaultCloseOperation(3);
             login.setFont(font1);
@@ -74,13 +74,13 @@ public class Server{
         }
 
 
-         static void exit(JFrame frame) {
+        static void exit(JFrame frame) {
             if (JOptionPane.showConfirmDialog(frame,"Close server?","Exit",JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE)==0)
                 System.exit(0);
         }
 
 
-         void settings(Stick stick, JTree jTree, DefaultMutableTreeNode node, boolean add){
+        void settings(Stick stick, JTree jTree, DefaultMutableTreeNode node, boolean add){
             JFrame properties = new JFrame("Properties");
             setEnabled(false);
             properties.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -129,7 +129,7 @@ public class Server{
             ok.setAlignmentX(Component.CENTER_ALIGNMENT);
             ok.addActionListener((event)->
             {
-                try {
+                try {Stick toAdd = new Stick(name.getText(), Integer.parseInt(XB.getText()), Integer.parseInt(YB.getText()),Integer.parseInt(XE.getText()),Integer.parseInt(YE.getText()),(Material) material.getSelectedItem() );
                     stick.setStickName(name.getText());
                     stick.setStickCoordBeg(Integer.parseInt(XB.getText()), Integer.parseInt(YB.getText()));
                     stick.setStickCoordEnd(Integer.parseInt(XE.getText()), Integer.parseInt(YE.getText()));
@@ -137,8 +137,8 @@ public class Server{
 
                     if (add) {
                     } else {
-                        myColl.add(stick);
-                        node.add(new DefaultMutableTreeNode(stick));
+                        myColl.add(toAdd);
+                        node.add(new DefaultMutableTreeNode(toAdd));
                     }
                     jTree.updateUI();
                     properties.dispose();
@@ -374,6 +374,7 @@ public class Server{
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             System.out.println("Collection saved");
             myColl.save(way);
+            System.exit(0);
             try{
                 t.join();
             }

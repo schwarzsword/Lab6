@@ -1,29 +1,31 @@
 package Server;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 
-    public class Tree {
-        JTree tree;
+public class Tree {
+    JTree tree;
 
-        public Tree(SticksCollection myColl){
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode("/");
-            DefaultMutableTreeNode stroot = new DefaultMutableTreeNode("Sticks");
-            root.add(stroot);
-            setTree(myColl, root);
-            tree = new JTree(root);
-        }
-
-        public void setTree(SticksCollection myColl, DefaultMutableTreeNode root) {
-            DefaultMutableTreeNode Sticks = (DefaultMutableTreeNode) root.getFirstChild();
-            myColl.getMyColl().forEach((e)->{Sticks.add(new DefaultMutableTreeNode(e));
-            });
-        }
-
-        public JTree getTree(){
-            return tree;
-        }
+    public Tree(SticksCollection coll){
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("/");
+        DefaultMutableTreeNode sticks = new DefaultMutableTreeNode("Sticks");
+        root.add(sticks);
+        setTree(coll, root);
+        tree = new JTree(root);
     }
 
+    public void setTree(SticksCollection coll, DefaultMutableTreeNode root) {
+        DefaultMutableTreeNode sticks = (DefaultMutableTreeNode) root.getFirstChild();
+        coll.getMyColl().forEach((item)->{
+                sticks.add(new DefaultMutableTreeNode(item));
+        });
+    }
 
+    public JTree getTree(){
+        return tree;
+    }
+}
