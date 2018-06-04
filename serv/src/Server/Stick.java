@@ -3,6 +3,7 @@ package Server;
 import Client.TestRuntimeException;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Stick extends Object{
     Stick(String sN, int bx, int by, int ex, int ey, Material mat){
@@ -65,10 +66,29 @@ public class Stick extends Object{
     }
 
     @Override
-    public boolean equals(Object obj) {
-        Stick other = (Stick)obj;
-       if (this.getStickCoordBeg().getX() == other.getStickCoordBeg().getX() && this.getStickCoordBeg().getY() == other.getStickCoordBeg().getY() && this.stickCoordEnd.getX()==other.stickCoordEnd.getX() && this.stickCoordEnd.getY()==other.stickCoordEnd.getY() )
-        return true;
-        else return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stick)) return false;
+        Stick stick = (Stick) o;
+        return getStickLength() == stick.getStickLength() &&
+                Objects.equals(getStickName(), stick.getStickName()) &&
+                Objects.equals(getStickCoordBeg(), stick.getStickCoordBeg()) &&
+                Objects.equals(getStickCoordEnd(), stick.getStickCoordEnd()) &&
+                getMaterial() == stick.getMaterial();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getStickName(), getStickCoordBeg(), getStickCoordEnd(), getStickLength(), getMaterial());
+    }
+
+    @Override
+    public String toString() {
+        return  stickName +
+                ": (" + stickCoordBeg.x + stickCoordBeg.y +
+                "); (" + stickCoordEnd + stickCoordEnd.y +
+                "), stickLength=" + stickLength +
+                ", material=" + material;
     }
 }

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public enum Material implements Serializable {
     OAK,
-    BIRTCH,
+    BIRCH,
     ELM,
     LINDEN,
     PALM,

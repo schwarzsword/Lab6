@@ -11,7 +11,6 @@ public class Client {
     public void setPort(int port) {this.port = port;}
     public void setHost(String host) { this.host = host; }
     public String getHost() {return host; }
-
     public Client(){
         setPort(62091);
         setHost("localhost");
@@ -20,7 +19,9 @@ public class Client {
         setHost(host);
         setPort(port);
     }
-    public void send(DatagramSocket ds, SocketAddress adr)throws IOException{
+
+
+    public static void send(DatagramSocket ds, SocketAddress adr)throws IOException{
         Scanner in = new Scanner(System.in);
         Date date = new Date();
         ds.setSoTimeout(5000);
@@ -29,7 +30,7 @@ public class Client {
         ds.send(outp);
         if(toSend.equals("exit")){System.exit(0);}
     }
-    public void receive(DatagramSocket ds){
+    public static void receive(DatagramSocket ds){
         byte[] bytes = new byte[1000];
         DatagramPacket inp = new DatagramPacket(bytes, bytes.length);
         try {

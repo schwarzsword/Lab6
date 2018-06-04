@@ -119,7 +119,7 @@ public class SticksCollection implements Serializable{
         try {
             FileOutputStream writer = new FileOutputStream(path);
             myColl.forEach(e -> {
-                String output = e.getStickName()+","+e.getStickCoordBeg().getX()+","+e.getStickCoordBeg().getY()+","+e.getStickCoordEnd().getX()+","+e.getStickCoordEnd().getY()+","+e.getStickLength()+","+e.getMaterial()+";";
+                String output = e.getStickName()+","+(int)e.getStickCoordBeg().getX()+","+(int)e.getStickCoordBeg().getY()+","+(int)e.getStickCoordEnd().getX()+","+(int)e.getStickCoordEnd().getY()+","+(Material)e.getMaterial()+";";
                 char[] outp = output.toCharArray();
                 for(int i = 0; i<output.length(); i++ ){
                     try{writer.write((byte)outp[i]);}catch (IOException ex){}
