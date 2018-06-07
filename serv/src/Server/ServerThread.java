@@ -1,32 +1,43 @@
 package Server;
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketAddress;
+import java.net.*;
 
-import static Server.Server.way;
-
-public class ServerThread implements Runnable{
-    SocketAddress adr;
-    String command;
-    SticksCollection collection;
-    String path;
-    public ServerThread(SocketAddress adr, SticksCollection collection, String way){
-        this.adr = adr;
-        this.collection = collection;
-        path = way;
+public class ServerThread implements Runnable {
+     Socket client;
+     String path;
+     SticksCollection processed;
+    ServerThread(Socket socket, SticksCollection needToProc, String file){
+        this.client = socket;
+        processed = needToProc;
+        path = file;
     }
     @Override
     public void run() {
-        try {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    ObjectOutput out = new ObjectOutputStream(bos);
-                    out.writeObject(collection);
+        try(ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(client.getInputStream())){
+            try {
+                if (!client.isClosed()) {
+                    String order = (String) in.readObject();
+                    //processed.menu(order, path);
+                    processed.save(path.replaceAll("myconfig.csv", "myconfig2.csv"));
+                    SticksCollection toSend = new SticksCollection();
+                    toSend.collectionImport(path.replaceAll("myconfig.csv", "myconfig2.csv"));
+                    out.writeObject(toSend);
                     out.flush();
-                    bos.close();
-                    byte[] toSend = bos.toByteArray();
-                    DatagramSocket datagramSocket = new DatagramSocket();
-                    DatagramPacket outp = new DatagramPacket(toSend, toSend.length, adr);
-                    datagramSocket.send(outp);
-    }catch (IOException ex){ex.printStackTrace();}    }}
-
+                }
+            } catch (SocketException e) {
+                System.out.println("Client " + client.getInetAddress() + " disconnected");
+            } catch (EOFException e) {
+                System.out.println("EOF");
+            } catch (ClassNotFoundException e) {
+                System.out.println("Wrong command.");
+            } finally {
+                out.flush();
+                in.close();
+                out.close();
+                client.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }}

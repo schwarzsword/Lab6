@@ -5,8 +5,7 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Date;
@@ -180,7 +179,7 @@ public class Server{
 
         void collection() {
             this.setFont(font1);
-            this.setSize(new Dimension(520, 520));
+            this.setSize(new Dimension(700, 520));
             this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
             Tree td = new Tree(myColl);
@@ -190,7 +189,7 @@ public class Server{
 
             JScrollPane scrollPane = new JScrollPane(MyTree);
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setSize(new Dimension(400, 520));
+            scrollPane.setPreferredSize(new Dimension(600, 520));
 
             JLabel selectedLabel = new JLabel(" ");
 
@@ -209,6 +208,7 @@ public class Server{
 
             JMenu mainMenu = new JMenu("Collection");
             mainMenu.setFont(font2);
+            mainMenu.applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
             JMenuItem loadItem = new JMenuItem("Import");
             loadItem.setFont(font2);
@@ -256,9 +256,10 @@ public class Server{
             setJMenuBar(menuBar);
         }
 
-            JButton delete = new JButton("Delete");
+            JButton delete = new JButton(" Delete ");
              delete.setAlignmentX(Component.CENTER_ALIGNMENT);
             delete.setFont(font2);
+            delete.setSize(new Dimension(70, 30));
             delete.addActionListener((event)->{
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) MyTree.getLastSelectedPathComponent();
                 try{
@@ -275,9 +276,10 @@ public class Server{
                 }
             });
 
-            JButton change = new JButton("Change");
+            JButton change = new JButton(" Change ");
             change.setAlignmentX(Component.CENTER_ALIGNMENT);
             change.setFont(font2);
+            change.setSize(delete.getSize());
             change.addActionListener((event)->{
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) MyTree.getLastSelectedPathComponent();
                 try{
@@ -291,9 +293,10 @@ public class Server{
                 }
             });
 
-            JButton addButton = new JButton("Add");
+            JButton addButton = new JButton("  Add  ");
             addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             addButton.setFont(font2);
+            addButton.setSize(delete.getSize());
             addButton.addActionListener((event)->{
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) MyTree.getLastSelectedPathComponent();
                 try{
@@ -313,16 +316,58 @@ public class Server{
                 }
             });
 
+
+
+            JPanel space1 = new JPanel();
+            space1.setMaximumSize(new Dimension(200, 30));
+            space1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel space2 = new JPanel();
+            space2.setMaximumSize(new Dimension(200, 30));
+            space2.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+//            JPanel space3 = new JPanel();
+//            space2.setMaximumSize(new Dimension(200, 300));
+//            space2.setAlignmentX(Component.TOP_ALIGNMENT);
+
+            JLabel collSize = new JLabel("Collection size: "+myColl.getMyColl().size());
+            collSize.setFont(new Font("Courier",1,14 ));
+            collSize.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+            JLabel initDate1 = new JLabel("Initialization date:");
+            initDate1.setFont(new Font("Courier",1,14 ));
+            initDate1.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+            JLabel initDate2 = new JLabel(""+myColl.getInitialization()+"  ");
+            initDate2.setFont(new Font("Courier",1,14 ));
+            initDate2.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+
+            JPanel infoPane = new JPanel();
+            infoPane.setLayout(new BoxLayout(infoPane, 1));
+            //infoPane.add(space3);
+            infoPane.add(collSize);
+            infoPane.add(initDate1);
+            infoPane.add(initDate2);
+
+
+
             JPanel editCollPane = new JPanel();
+            BoxLayout b = new BoxLayout(editCollPane, 1);
             editCollPane.setLayout(new BoxLayout(editCollPane, 1));
             editCollPane.add(addButton);
+            editCollPane.add(space1);
             editCollPane.add(change);
+            editCollPane.add(space2);
             editCollPane.add(delete);
-            editCollPane.setSize(200, 520);
+            editCollPane.setPreferredSize(new Dimension(200, 520));
 
 
             this.setLayout(new BoxLayout(this.getContentPane(), 0));
             this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            this.add(infoPane);
             this.add(scrollPane);
             this.add(editCollPane);
             this.setLocationRelativeTo(null);
@@ -338,29 +383,33 @@ public class Server{
         myColl.collectionImport(way);
 
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(()->{
-                try {myColl.save(way);}
-                catch (Exception e) {JOptionPane.showMessageDialog(null,"Error","Error", JOptionPane.ERROR_MESSAGE);}
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    myColl.save(way);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }));
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Save ","Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Save ", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        try{
-            DatagramChannel connection = DatagramChannel.open();
-            DatagramChannel dchan = DatagramChannel.open().bind(new InetSocketAddress(port));
-            while (connection.isConnected()){
-                if (t.isInterrupted()){System.exit(0);}
-                else{
-                byte[] bytes = new byte[10];
-                ByteBuffer inp = ByteBuffer.wrap(bytes);
-                inp.clear();
-                SocketAddress clientadr = dchan.receive(inp);
-                String str = new String(bytes);
-                new Thread(new ServerThread(clientadr, str, myColl, way)).start();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();  }
-                } }connection.close();
-        }catch (IOException ex){ex.printStackTrace();}   }}
+        try {
+            ServerSocket serverSock = new ServerSocket(port);
+            while (!serverSock.isClosed()) {
+                if (t.isInterrupted()) {
+                    System.exit(0);
+                } else {
+                    Socket sock = serverSock.accept();
+                    System.out.println("Recieved a request from: " + sock.getInetAddress());
+                    new Thread(new ServerThread(sock, myColl, way)).start();
+                }
+            }
+
+        } catch (BindException e) {
+            System.out.println("Server is already running!");
+            System.exit(0);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }}

@@ -2,8 +2,6 @@ package Client;
 import Server.Material;
 import Server.Stick;
 import Server.SticksCollection;
-import javafx.scene.chart.XYChart;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -11,10 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -23,11 +22,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class Client {
     static int port = 62091;
     static String host = "localhost";
-    static SocketAddress socketAddress = new InetSocketAddress(host, port);
-    public int getPort() {return port;}
-    public void setPort(int port) {this.port = port;}
-    public void setHost(String host) { this.host = host; }
-    public String getHost() {return host; }
     static CopyOnWriteArraySet<Stick> sticks;
 
     static class ClientGUI extends JFrame {
@@ -127,22 +121,6 @@ public class Client {
         }
 
 
-//        void downloadCollection() {
-//            while (true) {
-//                try {
-//                    DatagramSocket datagramSocket = new DatagramSocket();
-//                    sticks.clear();
-//                    sticks = connect(datagramSocket, socketAddress).getMyColl();
-//                    sticks.forEach(e-> System.out.println(e.toString()));
-//                    break;
-//                } catch (Exception e) {
-//
-//                    if (JOptionPane.showConfirmDialog(this, "Try again?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == 1)
-//                        System.exit(0);
-//                }
-//            }
-//        }
-
         private void init(){
             this.setFont(font1);
             class Canvas extends JPanel{
@@ -155,7 +133,6 @@ public class Client {
                     super();
                     this.size = size;
                     this.setLayout(null);
-                    //this.setNeededSize();
                     setAnimDraw(false);
                 }
                 public void paintComponent(Graphics g) {
@@ -186,11 +163,6 @@ public class Client {
                     buttons.forEach(this::add);
                 }
 
-//                private void setNeededSize(){
-//                    downloadCollection();
-//                    int width = sticks.get(sticks.size()-1).x + sticks.get(sticks.size()-1).size + 50;
-//                    this.setPreferredSize(new Dimension(width, (sticks.size()-1).y + sticks.get(sticks.size()-1).size + 50));
-//                }
 
                 public void setAnimDraw(boolean value){this.animDraw = value;}
                 public boolean getAnimDraw(){return this.animDraw;}
@@ -269,24 +241,12 @@ public class Client {
             JTextField name = new JTextField();
             name.setPreferredSize(new Dimension(100,20));
             namePanel.add(name);
-            namePanel.setBorder(BorderFactory.createTitledBorder("Имя"));
+            namePanel.setBorder(BorderFactory.createTitledBorder("Name"));
 
             JPanel matPanel = new JPanel();
             JComboBox material = new JComboBox(Material.values());
-            matPanel.setBorder(BorderFactory.createTitledBorder("Материал"));
+            matPanel.setBorder(BorderFactory.createTitledBorder("Material"));
             matPanel.add(material);
-
-            JPanel sexPanel = new JPanel();
-            JCheckBox isMale = new JCheckBox();
-            sexPanel.setBorder(BorderFactory.createTitledBorder("Мужской"));
-            sexPanel.setPreferredSize(new Dimension(100, 50));
-            sexPanel.add(isMale);
-
-            JPanel popPanel = new JPanel();
-            JTextField pop = new JTextField();
-            pop.setPreferredSize(new Dimension(100,20));
-            popPanel.setBorder(BorderFactory.createTitledBorder("Популярность"));
-            popPanel.add(pop);
 
 
             JPanel sizePanel = new JPanel();
@@ -300,11 +260,6 @@ public class Client {
             MySlider yCoord = new MySlider(0, 1200,  0, 200, 50, charact[7]);
 
 
-            JPanel colorPanel = new JPanel();
-            JTextField color = new JTextField();
-            color.setPreferredSize(new Dimension(100,20));
-            colorPanel.setBorder(BorderFactory.createTitledBorder("Цвет (нации)"));
-            colorPanel.add(color);
 
             JPanel setP = new JPanel();
             GroupLayout settings = new GroupLayout(setP);
@@ -317,13 +272,10 @@ public class Client {
                                     .addComponent(buttonPanel)
                                     .addComponent(namePanel)
                                     .addComponent(matPanel)
-                                    .addComponent(popPanel)
-                                    .addComponent(sexPanel)
                             ).addGroup(settings.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(sizePanel)
                             .addComponent(xCoord.getPanel())
                             .addComponent(yCoord.getPanel())
-                            .addComponent(colorPanel)
                     )
             );
             settings.setHorizontalGroup(settings.createSequentialGroup()
@@ -336,11 +288,8 @@ public class Client {
                             .addComponent(matPanel)
                             .addComponent(xCoord.getPanel())
                     ).addGroup(settings.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(popPanel)
                             .addComponent(yCoord.getPanel())
                     ).addGroup(settings.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(sexPanel)
-                            .addComponent(colorPanel)
                     )
             );
             this.add(setP, BorderLayout.SOUTH);
@@ -349,47 +298,34 @@ public class Client {
             setP.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
             this.setVisible(true);
         }
-        void downloadCollection() {
+        private void downloadCollection() {
             while (true) {
                 try {
-                    DatagramSocket datagramSocket = new DatagramSocket();
-                    sticks.clear();
-                    sticks = connect(datagramSocket, socketAddress).getMyColl();
-                    sticks.forEach(e-> System.out.println(e.toString()));
+                    sticks = connect().getMyColl();
                     break;
                 } catch (Exception e) {
-
-                    if (JOptionPane.showConfirmDialog(this, "Try again?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == 1)
-                        System.exit(0);
+//                    if (JOptionPane.showConfirmDialog(this, "Не удалось получить коллекцию\nПовторить попытку?", "Ошибка", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == 1)
+//                        System.exit(0);
+                    e.printStackTrace();
                 }
             }
         }
     }
 
-
-
-    public static SticksCollection connect(DatagramSocket ds, SocketAddress adr)throws IOException, ClassNotFoundException{
-        String toSend = "";
-        DatagramPacket outp = new DatagramPacket(toSend.getBytes(), toSend.getBytes().length, adr);
-        ds.send(outp);
-        byte[] bytes = new byte[10000];
-        DatagramPacket inp = new DatagramPacket(bytes, bytes.length);
-            ds.receive(inp);
-            System.out.print("Server is irresponsible, try later");
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            Object obj = ois.readObject();
-            return (SticksCollection)obj;
+    public static SticksCollection connect() throws ClassCastException, ClassNotFoundException, IOException{
+        SocketAddress sAddr = new InetSocketAddress(host, port);
+        SocketChannel sChannel = SocketChannel.open();
+        sChannel.configureBlocking(true);
+        if (sChannel.connect(sAddr)){
+            ObjectInputStream ois = new ObjectInputStream(sChannel.socket().getInputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(sChannel.socket().getOutputStream());
+            oos.writeObject("info");
+            Object o = ois.readObject();
+            return (SticksCollection)o;
+        } else throw new ConnectException();
     }
 
-    public static void main(String ... args){
-        //SwingUtilities.invokeLater(ClientGUI::new);
-        try {
-            while (true){
-
-        DatagramSocket ds = new DatagramSocket();
-            sticks = connect(ds, socketAddress).getMyColl();
-            sticks.forEach(e->System.out.println(e.toString()));}
-        }
-        catch (Exception e){}
+    public static void main(String ... args) {
+        SwingUtilities.invokeLater(ClientGUI::new);
     }
 }

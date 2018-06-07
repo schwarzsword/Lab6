@@ -1,11 +1,10 @@
 package Server;
 
-import Client.TestRuntimeException;
-
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Stick extends Object{
+public class Stick implements Serializable {
     Stick(String sN, int bx, int by, int ex, int ey, Material mat){
         setStickName(sN);
         setStickCoordBeg(bx, by);
@@ -86,8 +85,8 @@ public class Stick extends Object{
     @Override
     public String toString() {
         return  stickName +
-                ": (" + stickCoordBeg.x + stickCoordBeg.y +
-                "); (" + stickCoordEnd + stickCoordEnd.y +
+                ": (" + stickCoordBeg.x +"; "+ stickCoordBeg.y +
+                "); (" + stickCoordEnd.x +"; "+ stickCoordEnd.y +
                 "), stickLength=" + stickLength +
                 ", material=" + material;
     }
