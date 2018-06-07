@@ -333,41 +333,34 @@ public class Server{
     }
 
     public static void main(String ... args) {
-
-
-
-
-        Thread app = new Thread(ServGUI::new);
-        javax.swing.SwingUtilities.invokeLater(app);
-
+        Thread t = new Thread(ServGUI::new);
+        SwingUtilities.invokeLater(t);
         myColl.collectionImport(way);
-        Thread t = Thread.currentThread();
 
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(()->{
                 try {myColl.save(way);}
-                catch (Exception e) {JOptionPane.showMessageDialog(null,"Возникла ошибка внутри","Ошибка", JOptionPane.ERROR_MESSAGE);}
+                catch (Exception e) {JOptionPane.showMessageDialog(null,"Error","Error", JOptionPane.ERROR_MESSAGE);}
             }));
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Сохранение не удалось","Ошибка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Save ","Error", JOptionPane.ERROR_MESSAGE);
         }
+
         try{
             DatagramChannel connection = DatagramChannel.open();
             DatagramChannel dchan = DatagramChannel.open().bind(new InetSocketAddress(port));
-            Date d1 = new Date();
-            long t1, t2;
-            while (connection.isOpen()){
-                byte[] bytes = new byte[100];
+            while (connection.isConnected()){
+                if (t.isInterrupted()){System.exit(0);}
+                else{
+                byte[] bytes = new byte[10];
                 ByteBuffer inp = ByteBuffer.wrap(bytes);
                 inp.clear();
                 SocketAddress clientadr = dchan.receive(inp);
                 String str = new String(bytes);
-                t1 = Long.parseLong(str.substring(0,str.indexOf(";")));
-                t2 = d1.getTime();
-                if (t2-t1 < 5000){new Thread(new ServerThread(clientadr, str.substring(str.indexOf(";")+1), myColl, way)).start();}
+                new Thread(new ServerThread(clientadr, str, myColl, way)).start();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();  }
-                } connection.close();
+                } }connection.close();
         }catch (IOException ex){ex.printStackTrace();}   }}

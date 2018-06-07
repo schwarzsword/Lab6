@@ -17,7 +17,7 @@ public class Stick extends Object{
     private Point stickCoordBeg = new Point();
     private Point stickCoordEnd = new Point();
     private int stickLength;
-    private Material material;
+    Material material;
 
     public void setMaterial(Material mat){
         this.material=mat;
