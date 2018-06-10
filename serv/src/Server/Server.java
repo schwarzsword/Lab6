@@ -86,7 +86,7 @@ public class Server{
             setEnabled(false);
             properties.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             properties.setFont(font1);
-            properties.setSize(285, 360);
+            properties.setSize(300, 400);
             properties.setResizable(false);
             properties.setLocationRelativeTo(null);
 
@@ -105,30 +105,35 @@ public class Server{
 
             JTextField name = new JTextField(stick.getStickName());
             name.setAlignmentX(Component.CENTER_ALIGNMENT);
+            name.setMaximumSize(new Dimension(300, 70));
             JTextField XB = new JTextField(Integer.toString(stick.getStickCoordBeg().x));
             XB.setAlignmentX(Component.CENTER_ALIGNMENT);
+            XB.setMaximumSize(name.getMaximumSize());
             JTextField YB = new JTextField(Integer.toString(stick.getStickCoordBeg().y));
             YB.setAlignmentX(Component.CENTER_ALIGNMENT);
+            YB.setMaximumSize(name.getMaximumSize());
             JTextField XE = new JTextField(Integer.toString(stick.getStickCoordEnd().x));
             XE.setAlignmentX(Component.CENTER_ALIGNMENT);
+            XE.setMaximumSize(name.getMaximumSize());
             JTextField YE = new JTextField(Integer.toString(stick.getStickCoordEnd().y));
             YE.setAlignmentX(Component.CENTER_ALIGNMENT);
+            YE.setMaximumSize(name.getMaximumSize());
             JComboBox material = new JComboBox(Material.values());
             material.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             JButton cancel = new JButton("Cancel");
             cancel.setFont(font2);
             cancel.setPreferredSize(new Dimension(100,20));
-            cancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            cancel.setAlignmentX(Component.RIGHT_ALIGNMENT);
             cancel.addActionListener((event)-> {
                 properties.dispose();
                 setVisible(true);
                 setEnabled(true);
             });
 
-            JButton ok = new JButton("Ok");
+            JButton ok = new JButton("  Ok  ");
             ok.setFont(font2);
-            ok.setAlignmentX(Component.CENTER_ALIGNMENT);
+            ok.setAlignmentX(Component.RIGHT_ALIGNMENT);
             ok.addActionListener((event)->
             {
                 try {
@@ -155,6 +160,29 @@ public class Server{
 
             });
 
+            JPanel space1 = new JPanel();
+            space1.setMaximumSize(new Dimension(200, 30));
+            space1.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JPanel space4 = new JPanel();
+            space1.setMaximumSize(new Dimension(200, 30));
+            space1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel space2 = new JPanel();
+            space1.setMaximumSize(new Dimension(10, 30));
+            space1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel space3 = new JPanel();
+            space1.setMaximumSize(new Dimension(10, 30));
+            space1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel butts = new JPanel();
+            butts.setLayout(new BoxLayout(butts, 0));
+            butts.add(space3);
+            butts.add(ok);
+            butts.add(cancel);
+            butts.add(space2);
+
+
             ok.setSize(cancel.getSize());
             properties.setLayout(new BoxLayout(properties.getContentPane(), 1));
             properties.add(textName);
@@ -169,8 +197,9 @@ public class Server{
             properties.add(YE);
             properties.add(textMat);
             properties.add(material);
-            properties.add(ok);
-            properties.add(cancel);
+            properties.add(space1);
+            properties.add(butts);
+            properties.add(space4);
             properties.pack();
             properties.setVisible(true);
 
@@ -255,6 +284,9 @@ public class Server{
             menuBar.add(mainMenu);
             setJMenuBar(menuBar);
         }
+            JLabel collSize = new JLabel("Collection size: "+myColl.getMyColl().size());
+            collSize.setFont(new Font("Courier",1,14 ));
+            collSize.setAlignmentY(Component.CENTER_ALIGNMENT);
 
             JButton delete = new JButton(" Delete ");
              delete.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -269,6 +301,8 @@ public class Server{
                     myColl.getMyColl().remove(temp);
                     MyTree.updateUI();
                     scrollPane.revalidate();
+                    collSize.setText("Collection size: "+myColl.getMyColl().size());
+
                 } catch (ClassCastException e2) {
                     JOptionPane.showMessageDialog(null,"Выбрана не одежда","Ошибка", JOptionPane.ERROR_MESSAGE);
                 } catch (NullPointerException e){
@@ -286,6 +320,7 @@ public class Server{
                     Stick temp = (Stick) selectedNode.getUserObject();
                     settings(temp, MyTree,selectedNode, false);
                     MyTree.updateUI();
+                    collSize.setText("Collection size: "+myColl.getMyColl().size());
                 } catch (ClassCastException e2) {
                     JOptionPane.showMessageDialog(null,"Can't change folder","Error", JOptionPane.ERROR_MESSAGE);
                 } catch (NullPointerException e){
@@ -309,14 +344,13 @@ public class Server{
                         Stick temp = new Stick("Stick", 70,50,100,100, Material.OAK);
                         settings(temp, MyTree, selectedNode, true);
                         scrollPane.revalidate();
+                        collSize.setText("Collection size: "+myColl.getMyColl().size());
                     }
                     else JOptionPane.showMessageDialog(null,"Can't change root","Error", JOptionPane.INFORMATION_MESSAGE);
                 } catch (NullPointerException e){
                     JOptionPane.showMessageDialog(null,"Choose element","Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
-
-
 
             JPanel space1 = new JPanel();
             space1.setMaximumSize(new Dimension(200, 30));
@@ -329,12 +363,6 @@ public class Server{
 //            JPanel space3 = new JPanel();
 //            space2.setMaximumSize(new Dimension(200, 300));
 //            space2.setAlignmentX(Component.TOP_ALIGNMENT);
-
-            JLabel collSize = new JLabel("Collection size: "+myColl.getMyColl().size());
-            collSize.setFont(new Font("Courier",1,14 ));
-            collSize.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-
             JLabel initDate1 = new JLabel("Initialization date:");
             initDate1.setFont(new Font("Courier",1,14 ));
             initDate1.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -343,11 +371,13 @@ public class Server{
             initDate2.setFont(new Font("Courier",1,14 ));
             initDate2.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-
+            JLabel information = new JLabel("Info: ");
+            information.setFont(new Font("Courier",1,18 ));
 
             JPanel infoPane = new JPanel();
             infoPane.setLayout(new BoxLayout(infoPane, 1));
             //infoPane.add(space3);
+            infoPane.add(information);
             infoPane.add(collSize);
             infoPane.add(initDate1);
             infoPane.add(initDate2);
@@ -366,7 +396,7 @@ public class Server{
 
 
             this.setLayout(new BoxLayout(this.getContentPane(), 0));
-            this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             this.add(infoPane);
             this.add(scrollPane);
             this.add(editCollPane);
@@ -401,7 +431,6 @@ public class Server{
                     System.exit(0);
                 } else {
                     Socket sock = serverSock.accept();
-                    System.out.println("Recieved a request from: " + sock.getInetAddress());
                     new Thread(new ServerThread(sock, myColl, way)).start();
                 }
             }

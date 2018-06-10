@@ -23,11 +23,11 @@ public class SticksCollection implements Serializable{
     }
 
 
-    public CopyOnWriteArraySet<Stick> getMyColl() {
+    public ArrayList<Stick> getMyColl() {
         return myColl;
     }
 
-    private CopyOnWriteArraySet<Stick> myColl = new CopyOnWriteArraySet<>();
+    private ArrayList<Stick> myColl = new ArrayList<>();
 
 
 
