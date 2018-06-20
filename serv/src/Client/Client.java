@@ -14,17 +14,27 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.channels.SocketChannel;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class Client {
     static int port = 62091;
     static String host = "localhost";
     static ArrayList<Stick> sticks;
+    static Locale locRus = new Locale.Builder().setLanguage("ru").setRegion("RU").build();
+    static Locale locBel = new Locale.Builder().setLanguage("be").setRegion("BY").build();
+    static Locale locPol = new Locale.Builder().setLanguage("pl").setRegion("PL").build();
+    static Locale locIsp = new Locale.Builder().setLanguage("es").setRegion("GT").build();
+    static Locale locMon = new Locale.Builder().setLanguage("mn").setRegion("MN").build();
+    static Locale def = locRus;
+    static ResourceBundle rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
 
     static class ClientGUI extends JFrame {
         private Font font1 = new Font("Courier", 0, 16);
@@ -32,20 +42,26 @@ public class Client {
         private List<StickPanel> stickPanels = new ArrayList<>();
         private Timer timer;
         int counter;
-        int alp;
+        JMenu mainMenu;
         JPanel slidePanel = new JPanel();
         JPanel filterPanel = new JPanel();
         JPanel menu = new JPanel();
-        JCheckBox oakBox = new JCheckBox("OAK");
-        JCheckBox birchBox = new JCheckBox("BIRCH");
-        JCheckBox elmBox = new JCheckBox("ELM");
-        JCheckBox lindenBox = new JCheckBox("LINDEN");
-        JCheckBox palmBox = new JCheckBox("PALM");
-        JCheckBox pineBox = new JCheckBox("PINE");
-        JCheckBox redBox = new JCheckBox("REDTREE");
-        JCheckBox ironBox = new JCheckBox("IRONTREE");
+        JCheckBox oakBox = new JCheckBox("Дуб");
+        JCheckBox birchBox = new JCheckBox("Береза");
+        JCheckBox elmBox = new JCheckBox("Вяз");
+        JCheckBox lindenBox = new JCheckBox("Лиственица");
+        JCheckBox palmBox = new JCheckBox("Пальма");
+        JCheckBox pineBox = new JCheckBox("Сосна");
+        JCheckBox redBox = new JCheckBox("Красное дерево");
+        JCheckBox ironBox = new JCheckBox("Железное дерево");
         JTextField name = new JTextField();
-        MySlider lengthSlider = new MySlider("Length", 0,1000,50,200,50);
+        MySlider lengthSlider = new MySlider("Длина", 0,1000,50,200,50);
+        JPanel buttonPanel = new JPanel();
+        JPanel namePanel = new JPanel();
+        JPanel chBoxPanel = new JPanel();
+        JButton stopButton = new JButton("  Стоп  ");
+        JButton animationButton = new JButton(" Старт  ");
+        JButton updateButton = new JButton("Обновить");
 
 
         ClientGUI(){
@@ -53,6 +69,81 @@ public class Client {
             UIManager.put("OptionPane.messageFont", font1);
             UIManager.put("OptionPane.buttonFont", font2);
             init();
+        }
+
+        void setLanguageMenu(){
+            JMenuBar lang = new JMenuBar();
+            try {
+                mainMenu = new JMenu(new String(rsrc.getString("menu").getBytes("ISO-8859-1"), "UTF-8"));
+            }catch (UnsupportedEncodingException e){}
+            JMenuItem rus = new JMenuItem("Русский");
+            mainMenu.add(rus);
+            rus.addActionListener((event)->{
+                def = locRus;
+                rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
+                changeLanguage();
+            });
+
+            JMenuItem bel = new JMenuItem("Беларускі");
+            mainMenu.add(bel);
+            bel.addActionListener((event)->{
+                def = locBel;
+                rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
+                changeLanguage();
+            });
+
+            JMenuItem isp = new JMenuItem("Español (Guatemala)");
+            mainMenu.add(isp);
+            isp.addActionListener((event)->{
+                def = locIsp;
+                rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
+                changeLanguage();
+            });
+
+            JMenuItem pol = new JMenuItem("Polski");
+            mainMenu.add(pol);
+            pol.addActionListener((event)->{
+                def = locPol;
+                rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
+                changeLanguage();
+            });
+
+            JMenuItem mon = new JMenuItem("Монгол хэл");
+            mainMenu.add(mon);
+            mon.addActionListener((event)->{
+                def = locMon;
+                rsrc = ResourceBundle.getBundle("Client.loc.Lang", def);
+                changeLanguage();
+            });
+
+            lang.add(mainMenu);
+            this.setJMenuBar(lang);
+        }
+
+        private void changeLanguage(){
+            try {
+                mainMenu.setText(new String(rsrc.getString("menu").getBytes("ISO-8859-1"), "UTF-8"));
+                namePanel.setBorder(BorderFactory.createTitledBorder(new String(rsrc.getString("name").getBytes("ISO-8859-1"), "UTF-8")));
+                chBoxPanel.setBorder(BorderFactory.createTitledBorder(new String(rsrc.getString("material").getBytes("ISO-8859-1"), "UTF-8")));
+                slidePanel.setBorder(BorderFactory.createTitledBorder(new String(rsrc.getString("length").getBytes("ISO-8859-1"), "UTF-8")));
+                buttonPanel.setBorder(BorderFactory.createTitledBorder(new String(rsrc.getString("buttons").getBytes("ISO-8859-1"), "UTF-8")));
+                updateButton.setText(new String(rsrc.getString("update").getBytes("ISO-8859-1"), "UTF-8"));
+                animationButton.setText(new String(rsrc.getString("start").getBytes("ISO-8859-1"), "UTF-8"));
+                stopButton.setText(new String(rsrc.getString("stop").getBytes("ISO-8859-1"), "UTF-8"));
+                oakBox.setText(new String(rsrc.getString("oak").getBytes("ISO-8859-1"), "UTF-8"));
+                birchBox.setText(new String(rsrc.getString("birch").getBytes("ISO-8859-1"), "UTF-8"));
+                elmBox.setText(new String(rsrc.getString("elm").getBytes("ISO-8859-1"), "UTF-8"));
+                lindenBox.setText(new String(rsrc.getString("linden").getBytes("ISO-8859-1"), "UTF-8"));
+                palmBox.setText(new String(rsrc.getString("palm").getBytes("ISO-8859-1"), "UTF-8"));
+                pineBox.setText(new String(rsrc.getString("pine").getBytes("ISO-8859-1"), "UTF-8"));
+                redBox.setText(new String(rsrc.getString("redtree").getBytes("ISO-8859-1"), "UTF-8"));
+                ironBox.setText(new String(rsrc.getString("irontree").getBytes("ISO-8859-1"), "UTF-8"));
+                sticks.forEach(e->{
+                    String s = rsrc.getString("zoneid");
+                    e.initialTime = e.initialTime.withZoneSameInstant(ZoneId.of(s));
+                });
+               initPanels();
+            }catch (UnsupportedEncodingException e){}
         }
 
         void initPanels(){
@@ -66,9 +157,7 @@ public class Client {
             private JLabel label;
             private int myValue = 0;
 
-            private int getMyValue() {
-                return myValue;
-            }
+            private int getMyValue() {                return myValue;            }
 
             private void setMyValue(int myValue) {
                 this.myValue = myValue;
@@ -139,9 +228,10 @@ public class Client {
                 setForeground(new Color(r,g,b,a));
                 setBounds((int)(stick.getStickCoordBeg().x), (int)(stick.getStickCoordBeg().y), (int)this.size, (int)this.size);
                 setBorder(new StickBorder((int)this.size));
-                setToolTipText(this.stick.toString());
                 setOpaque(false);
                 setEnabled(false);
+                this.stick.initialTime.withZoneSameInstant(ZoneId.of(rsrc.getString("zoneid")));
+                setToolTipText(this.stick.toString());
             }
 
             public void reColor(){
@@ -170,6 +260,7 @@ public class Client {
 
         private void init(){
             this.setFont(font1);
+            this.setLanguageMenu();
             class Field extends JPanel{
                 private Graphics2D gr;
                 private int size;
@@ -210,9 +301,6 @@ public class Client {
 
                 public void setAnimDraw(boolean value){this.animDraw = value;}
                 public boolean getAnimDraw(){return this.animDraw;}
-                public void stop(){
-
-                }
 
             }
 
@@ -224,19 +312,15 @@ public class Client {
             this.add(drawField, BorderLayout.CENTER);
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+            buttonPanel.setBorder(BorderFactory.createTitledBorder("Меню"));
 
-            JPanel buttonPanel = new JPanel();
-            buttonPanel.setBorder(BorderFactory.createTitledBorder("Menu"));
-
-            JPanel namePanel = new JPanel();
             namePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             name.setPreferredSize(new Dimension(100,20));
             namePanel.add(name);
-            namePanel.setBorder(BorderFactory.createTitledBorder("Name"));
+            namePanel.setBorder(BorderFactory.createTitledBorder("Имя"));
             namePanel.setMaximumSize(new Dimension(200, 50));
 
-            JPanel chBoxPanel = new JPanel();
             chBoxPanel.setMaximumSize(new Dimension(200, 230));
             chBoxPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
             chBoxPanel.setLayout(new BoxLayout(chBoxPanel, 1));
@@ -257,10 +341,10 @@ public class Client {
             redBox.setName("REDTREE");
             chBoxPanel.add(ironBox);
             ironBox.setName("IRONTREE");
-            chBoxPanel.setBorder(BorderFactory.createTitledBorder("Material"));
+            chBoxPanel.setBorder(BorderFactory.createTitledBorder("Материал"));
 
             slidePanel.setMaximumSize(new Dimension(200, 100));
-            slidePanel.setBorder(BorderFactory.createTitledBorder("Length"));
+            slidePanel.setBorder(BorderFactory.createTitledBorder("Длина"));
             slidePanel.add(lengthSlider);
 
             filterPanel.setLayout(new BoxLayout(filterPanel, 1));
@@ -269,19 +353,15 @@ public class Client {
             filterPanel.add(slidePanel);
 
 
-
-
-            JButton updateButton = new JButton(" Update ");
             updateButton.setFont(font2);
             updateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             updateButton.addActionListener((event)-> {
                 field.setNeededSize();
                 field.revalidate();
                 field.repaint();
-                //lengthSlider.setMaximum(field.getPreferredSize().width);
             });
 
-            JButton animationButton = new JButton(" Start  ");
+
             animationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             animationButton.setFont(font2);
             animationButton.addActionListener((event)-> {
@@ -331,7 +411,7 @@ public class Client {
                     JOptionPane.showMessageDialog(null, "Animation is running", "Error", JOptionPane.ERROR_MESSAGE);
             });
 
-            JButton stopButton = new JButton("  Stop  ");
+
             stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             stopButton.setFont(font2);
             stopButton.addActionListener((event)-> {
@@ -359,12 +439,11 @@ public class Client {
             buttonPanel.add(updateButton);
             buttonPanel.setMaximumSize(new Dimension(200,150));
 
-
             menu.setLayout(new BoxLayout(menu, 1));
             menu.add(buttonPanel);
             menu.add(filterPanel);
             this.add(menu, BorderLayout.EAST);
-            this.setMinimumSize(new Dimension(1000, 500));
+            this.setMinimumSize(new Dimension(1000, 515));
             this.setLocationRelativeTo(null);
             menu.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
             this.setVisible(true);
@@ -376,8 +455,10 @@ public class Client {
                     sticks = connect().getMyColl();
                     break;
                 } catch (Exception e) {
-                    if (JOptionPane.showConfirmDialog(this, "Connection lost.\nTry again?", "Error", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == 1)
-                        System.exit(0);
+                    try {
+                        if (JOptionPane.showConfirmDialog(this, new String(rsrc.getString("connect_error").getBytes("ISO-8859-1"), "UTF-8"), new String(rsrc.getString("error").getBytes("ISO-8859-1"), "UTF-8"), JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == 1)
+                            System.exit(0);
+                    }catch (UnsupportedEncodingException ex){}
                 }
             }
         }
@@ -401,64 +482,3 @@ public class Client {
 
     }
 }
-
-
-//    JButton animationButton = new JButton(" Start  ");
-//            animationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//                    animationButton.setFont(font2);
-//                    animationButton.addActionListener((event)-> {
-//                    if(field.animDraw==false){
-//                    stickPanels.forEach(e->{
-//                    if(checkFilters(e,name, oakBox,birchBox,palmBox,pineBox,ironBox,redBox,elmBox,lindenBox, lengthSlider))
-//                    {e.animated=true;}
-//                    });
-//                    } else {
-//                    field.setAnimDraw(true);
-//                    counter = 0;
-//                    alp = 255;
-//                    timer = new Timer(10, new ActionListener() {
-//@Override
-//public void actionPerformed(ActionEvent e) {
-//        if (counter < 4000) {
-//        stickPanels.forEach((item) -> {
-//        int r = item.stick.getMaterial().getColor().getRed();
-//        int g = item.stick.getMaterial().getColor().getGreen();
-//        int b = item.stick.getMaterial().getColor().getBlue();
-//        item.setBackground(new Color(r, g, b, alp));
-//        item.setForeground(new Color(r, g, b, alp));
-//        item.revalidate();
-//        item.repaint();
-//        field.revalidate();
-//        field.repaint();
-//        drawField.revalidate();
-//        drawField.updateUI();
-//        });
-//        field.revalidate();
-//        field.repaint();
-//        field.updateUI();
-//        counter += 20;
-//        alp--;
-//        } else if (counter < 6000) {
-//        stickPanels.forEach((item) -> {
-//        int r = item.stick.getMaterial().getColor().getRed();
-//        int g = item.stick.getMaterial().getColor().getGreen();
-//        int b = item.stick.getMaterial().getColor().getBlue();
-//        item.setBackground(new Color(r, g, b, alp));
-//        item.setForeground(new Color(r, g, b, alp));
-//        item.revalidate();
-//        item.repaint();
-//        field.revalidate();
-//        field.repaint();
-//        drawField.revalidate();
-//        drawField.updateUI();
-//        });
-//        field.revalidate();
-//        field.repaint();
-//        field.updateUI();
-//        counter += 20;
-//        alp += 2;
-//        } else field.setAnimDraw(false);
-//        }
-//        }); timer.start();
-//        }
-//        });

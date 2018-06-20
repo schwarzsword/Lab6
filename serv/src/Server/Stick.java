@@ -2,20 +2,31 @@ package Server;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 public class Stick implements Serializable {
-    Stick(String sN, int bx, int by, int ex, int ey, Material mat){
+    Stick(String sN, int bx, int by, int ex, int ey, Material mat, String s){
         setStickName(sN);
         setStickCoordBeg(bx, by);
         setStickCoordEnd(ex, ey);
         setStickLength();
         setMaterial(mat);
+        initialTime = ZonedDateTime.now();
+    }
+    Stick(String sN, int bx, int by, int ex, int ey, Material mat,  ZonedDateTime dateTime){
+        setStickName(sN);
+        setStickCoordBeg(bx, by);
+        setStickCoordEnd(ex, ey);
+        setStickLength();
+        setMaterial(mat);
+        initialTime = dateTime;
     }
     private String stickName;
     private Point stickCoordBeg = new Point();
     private Point stickCoordEnd = new Point();
     private int stickLength;
+    public ZonedDateTime initialTime;
     Material material;
 
     public void setMaterial(Material mat){
@@ -84,10 +95,6 @@ public class Stick implements Serializable {
 
     @Override
     public String toString() {
-        return  stickName +
-                ": (" + stickCoordBeg.x +"; "+ stickCoordBeg.y +
-                "); (" + stickCoordEnd.x +"; "+ stickCoordEnd.y +
-                "), stickLength=" + stickLength +
-                ", material=" + material;
+        return  "Name:"+stickName +"; Len:"+stickLength+"; Init:"+initialTime;
     }
 }

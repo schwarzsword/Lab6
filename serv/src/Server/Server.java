@@ -13,7 +13,6 @@ import java.util.Date;
 public class Server{
     static int port = 62091;
     static SticksCollection myColl = new SticksCollection();
-    //static String way= System.getenv("MyPath");
     static String way= "/home/schwarz/ucheb/prog/l7/serv/myconfig.csv";
     static String pass = "";
 
@@ -341,7 +340,7 @@ public class Server{
                     }
                 } catch (ClassCastException e2) {
                     if(!selectedNode.isRoot()) {
-                        Stick temp = new Stick("Stick", 70,50,100,100, Material.OAK);
+                        Stick temp = new Stick("Stick", 70,50,100,100, Material.ELM, "");
                         settings(temp, MyTree, selectedNode, true);
                         scrollPane.revalidate();
                         collSize.setText("Collection size: "+myColl.getMyColl().size());
@@ -363,26 +362,24 @@ public class Server{
 //            JPanel space3 = new JPanel();
 //            space2.setMaximumSize(new Dimension(200, 300));
 //            space2.setAlignmentX(Component.TOP_ALIGNMENT);
-            JLabel initDate1 = new JLabel("Initialization date:");
-            initDate1.setFont(new Font("Courier",1,14 ));
-            initDate1.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-            JLabel initDate2 = new JLabel(""+myColl.getInitialization()+"  ");
-            initDate2.setFont(new Font("Courier",1,14 ));
-            initDate2.setAlignmentY(Component.CENTER_ALIGNMENT);
+//            JLabel initDate1 = new JLabel("Initialization date:");
+//            initDate1.setFont(new Font("Courier",1,14 ));
+//            initDate1.setAlignmentY(Component.CENTER_ALIGNMENT);
+//
+//            JLabel initDate2 = new JLabel(""+myColl.getInitialization()+"  ");
+//            initDate2.setFont(new Font("Courier",1,14 ));
+//            initDate2.setAlignmentY(Component.CENTER_ALIGNMENT);
 
             JLabel information = new JLabel("Info: ");
             information.setFont(new Font("Courier",1,18 ));
 
-            JPanel infoPane = new JPanel();
-            infoPane.setLayout(new BoxLayout(infoPane, 1));
-            //infoPane.add(space3);
-            infoPane.add(information);
-            infoPane.add(collSize);
-            infoPane.add(initDate1);
-            infoPane.add(initDate2);
-
-
+//            JPanel infoPane = new JPanel();
+//            infoPane.setLayout(new BoxLayout(infoPane, 1));
+//            //infoPane.add(space3);
+//            infoPane.add(information);
+//            infoPane.add(collSize);
+//            infoPane.add(initDate1);
+//            infoPane.add(initDate2);
 
             JPanel editCollPane = new JPanel();
             BoxLayout b = new BoxLayout(editCollPane, 1);
@@ -397,7 +394,7 @@ public class Server{
 
             this.setLayout(new BoxLayout(this.getContentPane(), 0));
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            this.add(infoPane);
+            //this.add(infoPane);
             this.add(scrollPane);
             this.add(editCollPane);
             this.setLocationRelativeTo(null);
