@@ -1,20 +1,166 @@
 package Server;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.lang.reflect.Field;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Date;
+import java.sql.*;
+import java.util.Scanner;
 
 public class Server{
     static int port = 62091;
     static SticksCollection myColl = new SticksCollection();
     static String way= "/home/schwarz/ucheb/prog/l7/serv/myconfig.csv";
-    static String pass = "";
+    static String user = "schwarz";
+    static String pswd;
+    static String url = "jdbc:postgresql://localhost:5432/labs";
+
+
+    static void setConnection(){
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static ArrayList<String> getFields(Object temp){
+        Class c = temp.getClass();
+        ArrayList<String> fieldNames = new ArrayList<>();
+        for (Field item: c.getDeclaredFields()){
+                fieldNames.add(item.getName());
+        }
+        return fieldNames;
+    }
+
+    static void createTable(Object o){
+        String string = o.getClass().getName().replaceAll("\\.","_");
+        ArrayList<String> fields = getFields(o);
+        StringBuilder query = new StringBuilder();
+        query.append("create table ")
+                .append(string)
+                .append("(");
+        fields.forEach(e-> query.append(e + " text,"));
+        query.deleteCharAt(query.lastIndexOf(",")).append(");");
+        String s = query.toString();
+        try {
+           DriverManager.getConnection(url, user, pswd).createStatement().execute(s);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    static void dropTable(Object o){
+        String name = o.getClass().getName().replaceAll("\\.","_");
+        try {
+            DriverManager.getConnection(url, user, pswd).createStatement().execute("Drop table "+ name+";");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    static void dropTable(String name){
+        try {
+            DriverManager.getConnection(url, user, pswd).createStatement().execute("Drop table "+name+";");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    static ResultSet selectForName(String obj, String field, String value){
+        ResultSet res;
+        try {
+            res = DriverManager.getConnection(url, user, pswd).createStatement().executeQuery("select * from "+obj+" where "+field+" like '"+value+"';");
+            return res;
+        } catch (SQLException e){
+            e.printStackTrace();
+    }return res=null;
+    }
+
+    static ResultSet selectForObj(Object o, String field, String value){
+        ResultSet res;
+        try {
+            String obj = o.getClass().getName().replaceAll("\\.","_");
+            res = DriverManager.getConnection(url, user, pswd).createStatement().executeQuery("select * from "+obj+" where "+field+" like '"+value+"';");
+            return res;
+        } catch (SQLException e){
+            e.printStackTrace();
+        }return res=null;
+    }
+
+    static void saveColl(SticksCollection coll){
+        try {
+            setConnection();
+            clearDB();
+            coll.getMyColl().forEach(e -> {
+                try {
+                    DriverManager.getConnection(url, user, pswd).createStatement().execute("INSERT into stick VALUES ('"+e.getStickName()+"',"+e.coorbegx+","+e.coorbegy+","+e.coorendx+","+e.coorendy+",'"+e.getMaterial()+"','"+e.getInit()+"');");
+                } catch (Exception excep) {excep.printStackTrace();}
+            });
+        }catch (Exception exp){exp.printStackTrace();}
+    }
+
+    static void getColl(){
+        setConnection();
+        myColl.clear();
+        try {
+            ResultSet resultSet = DriverManager.getConnection(url, user, pswd).createStatement().executeQuery("SELECT * FROM stick;");
+            while(resultSet.next()){
+                String str = resultSet.getString("initdate").replaceAll(" ","T")+"Z";
+                ZonedDateTime date = ZonedDateTime.parse(str).withZoneSameInstant(ZoneId.of("Europe/Moscow"));
+                myColl.add(new Stick(
+                        resultSet.getString("name"),
+                        resultSet.getInt("coorbegx"),
+                        resultSet.getInt("coorbegy"),
+                        resultSet.getInt("coorendx"),
+                        resultSet.getInt("coorendy"),
+                        Material.valueOf(resultSet.getString("material")),
+                        date
+                ));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    static void clearDB(){
+        try {
+            DriverManager.getConnection(url, user, pswd).createStatement().executeUpdate("Truncate stick");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    static boolean checkPassword(String s)throws FileNotFoundException {
+            Scanner scanner = new Scanner(new FileReader("/home/schwarz/ucheb/prog/l7/serv/file.txt"));
+            int examp = Integer.parseInt(scanner.nextLine());
+            byte[] bytes = s.getBytes();
+            int value= 0;
+            for(int i=0;i<bytes.length;i++){
+                int n=(bytes[i]<0?(int)bytes[i]+256:(int)bytes[i])<<(8*i);
+                value+=n;
+                value=value % 1234567890;
+            }
+            if (value==examp){      return true;      }
+            else return false;
+    }
 
     static class ServGUI extends JFrame{
         Font font1 = new Font("Courier", Font.PLAIN, 16);
@@ -54,13 +200,16 @@ public class Server{
             ok.setAlignmentY(JComponent.BOTTOM_ALIGNMENT);
             ok.addActionListener((event)->
             {
-                if(new String(pass.getPassword()).equals(Server.pass)){
+                try{
+                if(checkPassword(new String(pass.getPassword()))){
                     login.dispose();
+                    pswd = new String(pass.getPassword());
+                    getColl();
                     collection();
                 }
                 else {
                     JOptionPane.showMessageDialog(login, "Invalid password", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                }}catch (Exception e){}
             });
 
             login.setLayout(new BoxLayout(login.getContentPane(), 1));
@@ -105,16 +254,16 @@ public class Server{
             JTextField name = new JTextField(stick.getStickName());
             name.setAlignmentX(Component.CENTER_ALIGNMENT);
             name.setMaximumSize(new Dimension(300, 70));
-            JTextField XB = new JTextField(Integer.toString(stick.getStickCoordBeg().x));
+            JTextField XB = new JTextField(Integer.toString(stick.coorbegx));
             XB.setAlignmentX(Component.CENTER_ALIGNMENT);
             XB.setMaximumSize(name.getMaximumSize());
-            JTextField YB = new JTextField(Integer.toString(stick.getStickCoordBeg().y));
+            JTextField YB = new JTextField(Integer.toString(stick.coorbegy));
             YB.setAlignmentX(Component.CENTER_ALIGNMENT);
             YB.setMaximumSize(name.getMaximumSize());
-            JTextField XE = new JTextField(Integer.toString(stick.getStickCoordEnd().x));
+            JTextField XE = new JTextField(Integer.toString(stick.coorendx));
             XE.setAlignmentX(Component.CENTER_ALIGNMENT);
             XE.setMaximumSize(name.getMaximumSize());
-            JTextField YE = new JTextField(Integer.toString(stick.getStickCoordEnd().y));
+            JTextField YE = new JTextField(Integer.toString(stick.coorendy));
             YE.setAlignmentX(Component.CENTER_ALIGNMENT);
             YE.setMaximumSize(name.getMaximumSize());
             JComboBox material = new JComboBox(Material.values());
@@ -152,9 +301,9 @@ public class Server{
                     setVisible(true);
                     setEnabled(true);
                 } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(properties, "Неверный формат числового поля", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(properties, "Invalid field format", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception e){
-                    JOptionPane.showMessageDialog(properties, "Невреный формат поля", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(properties, "Invalid field format", "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
             });
@@ -257,6 +406,7 @@ public class Server{
             mainMenu.add(saveItem);
             saveItem.addActionListener((event) -> {
                 myColl.save(way);
+                saveColl(myColl);
                 JOptionPane.showMessageDialog(null, "Collection saved", "Report", JOptionPane.INFORMATION_MESSAGE);
             });
 
@@ -407,12 +557,13 @@ public class Server{
     public static void main(String ... args) {
         Thread t = new Thread(ServGUI::new);
         SwingUtilities.invokeLater(t);
-        myColl.collectionImport(way);
+       // getColl();
 
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     myColl.save(way);
+                    saveColl(myColl);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -438,4 +589,5 @@ public class Server{
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-    }}
+    }
+}

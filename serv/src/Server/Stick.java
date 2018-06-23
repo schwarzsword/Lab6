@@ -1,18 +1,22 @@
 package Server;
 
-import java.awt.*;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import static java.util.Objects.hash;
+
 public class Stick implements Serializable {
+
     Stick(String sN, int bx, int by, int ex, int ey, Material mat, String s){
         setStickName(sN);
         setStickCoordBeg(bx, by);
         setStickCoordEnd(ex, ey);
         setStickLength();
         setMaterial(mat);
-        initialTime = ZonedDateTime.now();
+        initdate = ZonedDateTime.now();
     }
     Stick(String sN, int bx, int by, int ex, int ey, Material mat,  ZonedDateTime dateTime){
         setStickName(sN);
@@ -20,60 +24,50 @@ public class Stick implements Serializable {
         setStickCoordEnd(ex, ey);
         setStickLength();
         setMaterial(mat);
-        initialTime = dateTime;
+        initdate = dateTime;
     }
     private String stickName;
-    private Point stickCoordBeg = new Point();
-    private Point stickCoordEnd = new Point();
+    public int coorbegx;
+    public int coorbegy;
+    public int coorendx;
+    public int coorendy;
     private int stickLength;
-    public ZonedDateTime initialTime;
+    public ZonedDateTime initdate;
     Material material;
 
-    public void setMaterial(Material mat){
-        this.material=mat;
+
+    public String getInit(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        String s = formatter.format(initdate);
+        return s;
     }
 
-    public Material getMaterial() {
-        return material;
-    }
+    public void setMaterial(Material mat){        this.material=mat;    }
 
-    public Point getStickCoordEnd() {
-        return stickCoordEnd;
-    }
+    public Material getMaterial() {        return material;    }
+
 
     public void setStickCoordEnd(int x, int y) {
-        this.stickCoordEnd.x = x;
-        this.stickCoordEnd.y = y;
+        coorendx = x;
+        coorendy = y;
 
     }
 
-    public Point getStickCoordBeg() {
-        return stickCoordBeg;
-    }
 
     public void setStickCoordBeg(int x, int y) {
-        this.stickCoordBeg.x = x;
-        this.stickCoordBeg.y = y;
+        coorbegx = x;
+        coorbegy = y;
     }
 
-
-
-
-    public int getStickLength() {
-        return stickLength;
-    }
+    public int getStickLength() {return stickLength; }
 
     public void setStickLength() {
-        this.stickLength = (int)Math.sqrt(Math.pow(getStickCoordBeg().getX()-getStickCoordEnd().getX(),2)+Math.pow(getStickCoordBeg().getY()-getStickCoordEnd().getY(),2));
+        this.stickLength = (int)Math.sqrt(Math.pow(coorbegx-coorendx,2)+Math.pow(coorbegy-coorendy,2));
     }
 
-    public String getStickName() {
-        return stickName;
-    }
+    public String getStickName() { return stickName;}
 
-    public void setStickName(String stickName) {
-        this.stickName = stickName;
-    }
+    public void setStickName(String stickName) { this.stickName = stickName;}
 
     @Override
     public boolean equals(Object o) {
@@ -82,19 +76,18 @@ public class Stick implements Serializable {
         Stick stick = (Stick) o;
         return getStickLength() == stick.getStickLength() &&
                 Objects.equals(getStickName(), stick.getStickName()) &&
-                Objects.equals(getStickCoordBeg(), stick.getStickCoordBeg()) &&
-                Objects.equals(getStickCoordEnd(), stick.getStickCoordEnd()) &&
+                Objects.equals(coorbegx, stick.coorbegx) &&
+                Objects.equals(coorbegy, stick.coorbegy) &&
+                Objects.equals(coorendx, stick.coorendx) &&
+                Objects.equals(coorendy, stick.coorendy) &&
                 getMaterial() == stick.getMaterial();
     }
 
     @Override
-    public int hashCode() {
-
-        return Objects.hash(getStickName(), getStickCoordBeg(), getStickCoordEnd(), getStickLength(), getMaterial());
-    }
+    public int hashCode() {return hash(getStickName(),getMaterial(),getStickLength(),getInit());}
 
     @Override
-    public String toString() {
-        return  "Name:"+stickName +"; Len:"+stickLength+"; Init:"+initialTime;
-    }
+    public String toString() {return  "Name:"+stickName +"; Len:"+stickLength+"; Init:"+ initdate;}
+
+
 }

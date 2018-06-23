@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.channels.SocketChannel;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +63,6 @@ public class Client {
         JButton stopButton = new JButton("  Стоп  ");
         JButton animationButton = new JButton(" Старт  ");
         JButton updateButton = new JButton("Обновить");
-
 
         ClientGUI(){
             super("Client");
@@ -120,7 +120,7 @@ public class Client {
             this.setJMenuBar(lang);
         }
 
-        private void changeLanguage(){
+        void changeLanguage(){
             try {
                 mainMenu.setText(new String(rsrc.getString("menu").getBytes("ISO-8859-1"), "UTF-8"));
                 namePanel.setBorder(BorderFactory.createTitledBorder(new String(rsrc.getString("name").getBytes("ISO-8859-1"), "UTF-8")));
@@ -140,7 +140,7 @@ public class Client {
                 ironBox.setText(new String(rsrc.getString("irontree").getBytes("ISO-8859-1"), "UTF-8"));
                 sticks.forEach(e->{
                     String s = rsrc.getString("zoneid");
-                    e.initialTime = e.initialTime.withZoneSameInstant(ZoneId.of(s));
+                    e.initdate = e.initdate.withZoneSameInstant(ZoneId.of(s));
                 });
                initPanels();
             }catch (UnsupportedEncodingException e){}
@@ -226,12 +226,13 @@ public class Client {
                 this.animated = false;
                 setBackground(new Color(r,g,b,a));
                 setForeground(new Color(r,g,b,a));
-                setBounds((int)(stick.getStickCoordBeg().x), (int)(stick.getStickCoordBeg().y), (int)this.size, (int)this.size);
+                setBounds((int)(stick.coorbegx), (int)(stick.coorbegy), (int)this.size, (int)this.size);
                 setBorder(new StickBorder((int)this.size));
                 setOpaque(false);
                 setEnabled(false);
-                this.stick.initialTime.withZoneSameInstant(ZoneId.of(rsrc.getString("zoneid")));
-                setToolTipText(this.stick.toString());
+                this.stick.initdate.withZoneSameInstant(ZoneId.of(rsrc.getString("zoneid")));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(rsrc.getString("pattern"));
+                setToolTipText(this.stick.initdate.format(formatter));
             }
 
             public void reColor(){
@@ -242,7 +243,7 @@ public class Client {
             @Override
             public void paintComponent(Graphics graphics) {
                 graphics.setColor(new Color(r,g,b,a));
-                graphics.fillRect(stick.getStickCoordBeg().x, stick.getStickCoordBeg().y, (int)this.size, (int)this.size);;
+                graphics.fillRect(stick.coorbegx, stick.coorbegy, (int)this.size, (int)this.size);;
             }
             public boolean getAnim(){return this.animated;}
         }
@@ -294,9 +295,9 @@ public class Client {
                 }
                 private void setNeededSize(){
                     downloadCollection();
-                    int width = sticks.get(sticks.size()-1).getStickCoordBeg().x + sticks.get(sticks.size()-1).getStickLength() + 50;
+                    int width = sticks.get(sticks.size()-1).coorbegx + sticks.get(sticks.size()-1).getStickLength() + 50;
                     sticks.sort((c1,c2)->{return c1.getStickLength()-c2.getStickLength();});
-                    this.setPreferredSize(new Dimension(width, sticks.get(sticks.size()-1).getStickCoordBeg().y + sticks.get(sticks.size()-1).getStickLength() + 50));
+                    this.setPreferredSize(new Dimension(width, sticks.get(sticks.size()-1).coorbegy + sticks.get(sticks.size()-1).getStickLength() + 50));
                 }
 
                 public void setAnimDraw(boolean value){this.animDraw = value;}

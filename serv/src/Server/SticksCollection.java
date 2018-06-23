@@ -1,14 +1,9 @@
 package Server;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.*;
 
-import com.google.gson.*;
 /**
  * StickCollection, class controls collection.
  * @author Kirill Cherniy.
@@ -17,6 +12,10 @@ import com.google.gson.*;
 public class SticksCollection implements Serializable{
 
     public ArrayList<Stick> getMyColl() {        return myColl;    }
+
+    public void setMyColl(ArrayList<Stick> myColl) {
+        this.myColl = myColl;
+    }
 
     private ArrayList<Stick> myColl = new ArrayList<>();
 
@@ -100,7 +99,7 @@ public class SticksCollection implements Serializable{
         try {
             FileOutputStream writer = new FileOutputStream(path);
             myColl.forEach(e -> {
-                String output = e.getStickName()+","+(int)e.getStickCoordBeg().getX()+","+(int)e.getStickCoordBeg().getY()+","+(int)e.getStickCoordEnd().getX()+","+(int)e.getStickCoordEnd().getY()+","+(Material)e.getMaterial()+","+e.initialTime+";";
+                String output = e.getStickName()+","+e.coorbegx+","+e.coorbegy+","+e.coorendx+","+e.coorendy+","+e.getMaterial()+","+e.initdate +";";
                 char[] outp = output.toCharArray();
                 for(int i = 0; i<output.length(); i++ ){
                     try{writer.write((byte)outp[i]);}catch (IOException ex){}
@@ -165,13 +164,16 @@ public class SticksCollection implements Serializable{
     public void add(Stick stick){
          myColl.add(stick);
     }
-    /**
-     * Method allows to interact with
-     * collection.
-     * Format of file should be <i>csv</i>.
-     * @param command inputten command.
-     * @param path location of file.
-     */
+    public void clear(){
+        myColl.clear();
+    }
+//    /**
+//     * Method allows to interact with
+//     * collection.
+//     * Format of file should be <i>csv</i>.
+//     * @param command inputten command.
+//     * @param path location of file.
+//     */
 
 //    public byte[] startWork(String command, String path){
 //        byte[] send;
